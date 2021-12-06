@@ -19,7 +19,17 @@ import streamlit as st
 import joblib,os
 
 # Data dependencies
-import pandas as pd
+from PIL import Image
+
+import numpy as np        # Fundamental package for linear algebra and multidimensional arrays
+import pandas as pd       # Data analysis and manipulation tool
+
+import matplotlib.pyplot as plt
+import re
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+
+
+
 
 # Vectorizer
 # Creating Lemmatizer Function
@@ -129,6 +139,7 @@ def main():
 	# Building out the predication page
 	if selection == "Prediction":
 		st.info("Prediction with ML Models")
+		
 		# Creating a text box for user input
 		tweet_text = st.text_area("Enter Text","Type Here")
 

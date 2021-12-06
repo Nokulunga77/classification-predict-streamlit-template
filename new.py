@@ -33,73 +33,14 @@ from PIL import Image
 import numpy as np        # Fundamental package for linear algebra and multidimensional arrays
 import pandas as pd       # Data analysis and manipulation tool
 
-import requests
-import io
-
-# Importing modules for data science and visualization
-import pandas as pd
-import numpy as np
-import time
-import timeit
-import seaborn as sns
-import pickle
 import matplotlib.pyplot as plt
-import matplotlib as mpl
-
-# Quality of all figures in notebook
-mpl.rcParams['figure.dpi'] = 180
-
-# NLP Libraries
 import re
-import string
-import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk.tokenize import RegexpTokenizer
-from nltk.stem import PorterStemmer
-from nltk.stem import WordNetLemmatizer
-from nltk.stem import SnowballStemmer
-from os import path
-from PIL import Image
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
-from collections import Counter
 
-# ML Libraries
-from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfVectorizer
-from nltk import pos_tag
-
-# Model Evaluation Packages
-from sklearn.metrics import accuracy_score, precision_score, recall_score
-from sklearn.metrics import confusion_matrix, classification_report, f1_score
-from sklearn.metrics import make_scorer
-from sklearn.datasets import make_classification
-from sklearn.metrics import f1_score
-from imblearn.under_sampling import InstanceHardnessThreshold
-
-# Ignore warnings
-import warnings
-warnings.filterwarnings('ignore')
-
-# Modelling
-from sklearn.linear_model import LogisticRegression, SGDClassifier
-from sklearn.svm import LinearSVC, SVC
-from sklearn.svm import SVC
-from sklearn.naive_bayes import MultinomialNB, ComplementNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn import metrics
-from sklearn.pipeline import Pipeline
-from sklearn.decomposition import LatentDirichletAllocation as LDA
-from sklearn.model_selection import GridSearchCV
-from sklearn import metrics
 
 
 # Vectorizer
-news_vectorizer = open("resources/tfidfvect.pkl","rb")
+news_vectorizer = open("resources/vect.pkl","rb")
 tweet_cv = joblib.load(news_vectorizer) # loading your vectorizer from the pkl file
 
 # Load your raw data
@@ -118,7 +59,7 @@ def main():
 
 	# Creating sidebar with selection box -
 	# you can create multiple pages this way
-	options = ["Home","EDA","Prediction"]
+	options = ["Home","Introduction to EDA","EDA","Sentiments","Prediction"]
 	selection = st.sidebar.selectbox("Choose Option", options)
 
 	# Building out the "Home" page
@@ -131,14 +72,12 @@ def main():
 		# You can read a markdown file from supporting resources folder
 		st.info("With this context, we have created a Machine Learning model that is able to classify whether or not a person believes in climate change, based on their novel tweet data. This model together will the accompanying app will help Geo-Environmental Consultation companies who are turning to social media to obtain valuable information about job applicants and to monitor the activities of their employees in relation to the values they have towards the company's projects and beliefs surrounding the ever changing global environment.")
 
-
-	# Building out the EDA page
-	if selection == "EDA":
+	if selection == "Introduction to EDA":
 		st.header("Exploratory Data Analysis (EDA)")
 		image = Image.open('EDA.jpg')
 		st.image(image)
 		st.subheader("What is Exploratory Data Analysis?")
-		st.text("Exploratory Data Analysis (EDA) is an approach/philosophy for data analysis that employs a variety of techniques (mostly graphical) to:")
+		st.markdown("Exploratory Data Analysis (EDA) is an approach/philosophy for data analysis that employs a variety of techniques (mostly graphical) to:")
 		st.text("(I)	Maximize insight into a data set")
 		st.text("(II)	Uncover underlying structure")
 		st.text("(III)	Extract important variables")
@@ -146,7 +85,57 @@ def main():
 		st.text("(V)	Test underlying assumptions")
 		st.text("(VI)	Develop parsimonious models")
 		st.text("(VII)	Determine optimal factor settings")
+		
+
+	# Building out the predication page
+	if selection == "Prediction":
+		st.info("Prediction with ML Models") 
+	
+
+		# Creating a text box for user input
+		tweet_text =st.text_area("Enter Text","Type Here")
+
+		if st.button("Classify with Logistic Regression Model"):
+			# Transforming user input with vectorizer
+			vect_text =tweet_cv.transform([tweet_text]).toarray()
+			# Load your .pkl file with the model of your choice + make predictions
+			# Try loading in multiple models to give the user a choice
+			predictor = joblib.load(open(os.path.join("resources/log.pkl"),"rb"))
+			prediction = predictor.predict(vect_text)
+			# When model has successfully run, will print prediction
+			# You can use a dictionary or similar structure to make this output
+			# more human interpretable.
+			st.success("Text Categorized as: {}".format(prediction))
+
+		if st.button("Classify with Decision Tree Model"):
+			# Transforming user input with vectorizer
+			vect_text =tweet_cv.transform([tweet_text]).toarray()
+			# Load your .pkl file with the model of your choice + make predictions
+			# Try loading in multiple models to give the user a choice
+			predictor = joblib.load(open(os.path.join("resources/dt.pkl"),"rb"))
+			prediction = predictor.predict(vect_text)
+			# When model has successfully run, will print prediction
+			# You can use a dictionary or similar structure to make this output
+			# more human interpretable.
+			st.success("Text Categorized as: {}".format(prediction))
+
+		if st.button("Classify with K-Nearest Neighbors Model"):
+			# Transforming user input with vectorizer
+			vect_text =tweet_cv.transform([tweet_text]).toarray()
+			# Load your .pkl file with the model of your choice + make predictions
+			# Try loading in multiple models to give the user a choice
+			predictor = joblib.load(open(os.path.join("resources/rf.pkl"),"rb"))
+			prediction = predictor.predict(vect_text)
+			# When model has successfully run, will print prediction
+			# You can use a dictionary or similar structure to make this output
+			# more human interpretable.
+			st.success("Text Categorized as: {}".format(prediction))
+	
+	
+	# Building out the EDA page
+	if selection == "EDA":
 		st.subheader("Raw Twitter data and label")
+		
 		#if st.checkbox('Show raw data'): # data is hidden if box is unchecked
 			#st.write(raw) # will write the df to the page
 			
@@ -160,18 +149,18 @@ def main():
 
 		increament = st.button('Show more columns👆')
 		if increament:
-			st.session_state.number_of_rows += 1
+			st.session_state.number_of_rows = 10
 
 
 		decrement = st.button('Show fewer columns👇')
 		if decrement:
-			st.session_state.number_of_rows -= 1
+			st.session_state.number_of_rows = 2
 
 
 		st.table(raw.head(st.session_state['number_of_rows']))
 
-		types = {'Categorical':['sentiment'], 'Numerical':[]}
-		column = st.selectbox('select a column', types[st.session_state['type']])
+		#types = {'Categorical':['sentiment'], 'Numerical':[]}
+		#column = st.selectbox('select a column', types[st.session_state['type']])
 
 		def handle_click(new_type):
 				st.session_state.type = new_type
@@ -185,7 +174,7 @@ def main():
 		type_of_column = st.radio("What kind of analysis",['Categorical','Numerical'], on_change = handle_click_wo,key = 'kind_of_column')
 		#change == st.button('Change', on_click=handle_click,args = [type_of_column])
 		if st.session_state['type'] =='Categorical':
-			Distribution =  pd.DataFrame(raw[column].value_counts())
+			Distribution =  pd.DataFrame(raw['sentiment'].value_counts())
 			st.bar_chart(Distribution)
 		else:
 			st.subheader("No Numerical Data")
@@ -206,7 +195,7 @@ def main():
 		st.subheader("most popular messages")
 		st.text("Table below shows the most popular messages for the given data")
 		sel_col,disp_col = st.columns(2)
-		choose = sel_col.slider('what number of rows would you like to view?',min_value = 5,max_value = len(raw),value = 20, step = 5)
+		choose = sel_col.slider('what number of rows would you like to view?',min_value = 5,max_value = 100,value = 20, step = 5)
 		working_df['users'] = [''.join(re.findall(r'@\w{,}', line)) 
         if '@' in line else np.nan for line in working_df.message]
 		counts = working_df[['message','users']].groupby('users',as_index=False).count().sort_values(by='message', ascending=False)
@@ -228,13 +217,18 @@ def main():
 		#wordscloud(write a code that will make the use chose the cloud they would like to see)
 		
 		
-		st.subheader("Sentiment Clouds")
-		st.text("Figure below shows the word clouds to the most common words associated with the chosen sentiment for the given data")
+		
 		#type_of_sentiment  = st.radio("Which sentiment would you like to see?",['Positive','Negative','Neutral','News'])
 
 		#option = ['Positive','Negative','Neutral','News']
-		
-
+	if selection == "Sentiments":
+		st.subheader("Sentiment Clouds")
+		st.markdown("The tweets sentiments are divided into four (4) classes:")
+		st.text("[ 2 ] - News: tweets links to factual news about climate change")
+		st.text("[ 1 ] - Pro: tweets that supports the belief of man-made climate change")
+		st.text("[ 0 ] - Neutral: tweets that neither support nor refutes the belief of man-made climate change")
+		st.text("[-1 ] - Anti (Negative): tweets that does not believe in man-made climate change")
+		st.markdown("Figure below shows the word clouds to the most common words associated with the chosen sentiment for the given data")
 		if st.button('Positive Sentiment'):
 			#Positive
 			df_pos = raw.loc[raw['sentiment'] == 1] #positive reviews
@@ -280,50 +274,7 @@ def main():
 			Negative = st.pyplot(fig4)
 
 		
-	# Building out the predication page
-	if selection == "Prediction":
-		st.header("Prediction with ML Models") 
-		image = Image.open('me2.jpg')
-		st.image(image)
-
-		# Creating a text box for user input
-		tweet_text =st.text_area("Enter Text","Type Here")
-
-		if st.button("Classify with Logistic Regression Model"):
-			# Transforming user input with vectorizer
-			vect_text =tweet_cv.transform([tweet_text]).toarray()
-			# Load your .pkl file with the model of your choice + make predictions
-			# Try loading in multiple models to give the user a choice
-			predictor = joblib.load(open(os.path.join("resources/log.pkl"),"rb"))
-			prediction = predictor.predict(vect_text)
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
-			st.success("Text Categorized as: {}".format(prediction))
-
-		if st.button("Classify with Decision Tree Model"):
-			# Transforming user input with vectorizer
-			vect_text =tweet_cv.transform([tweet_text]).toarray()
-			# Load your .pkl file with the model of your choice + make predictions
-			# Try loading in multiple models to give the user a choice
-			predictor = joblib.load(open(os.path.join("resources/dt.pkl"),"rb"))
-			prediction = predictor.predict(vect_text)
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
-			st.success("Text Categorized as: {}".format(prediction))
-
-		if st.button("Classify with K-Nearest Neighbors Model"):
-			# Transforming user input with vectorizer
-			vect_text =tweet_cv.transform([tweet_text]).toarray()
-			# Load your .pkl file with the model of your choice + make predictions
-			# Try loading in multiple models to give the user a choice
-			predictor = joblib.load(open(os.path.join("resources/rf.pkl"),"rb"))
-			prediction = predictor.predict(vect_text)
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
-			st.success("Text Categorized as: {}".format(prediction))
+	
 
 
 # Required to let Streamlit instantiate our web app.  
