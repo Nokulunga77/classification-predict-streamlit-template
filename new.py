@@ -86,50 +86,6 @@ def main():
 		st.text("(VI)	Develop parsimonious models")
 		st.text("(VII)	Determine optimal factor settings")
 		
-
-	# Building out the predication page
-	if selection == "Prediction":
-		st.info("Prediction with ML Models") 
-	
-
-		# Creating a text box for user input
-		tweet_text =st.text_area("Enter Text","Type Here")
-
-		if st.button("Classify with Logistic Regression Model"):
-			# Transforming user input with vectorizer
-			vect_text =tweet_cv.transform([tweet_text]).toarray()
-			# Load your .pkl file with the model of your choice + make predictions
-			# Try loading in multiple models to give the user a choice
-			predictor = joblib.load(open(os.path.join("resources/log.pkl"),"rb"))
-			prediction = predictor.predict(vect_text)
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
-			st.success("Text Categorized as: {}".format(prediction))
-
-		if st.button("Classify with Decision Tree Model"):
-			# Transforming user input with vectorizer
-			vect_text =tweet_cv.transform([tweet_text]).toarray()
-			# Load your .pkl file with the model of your choice + make predictions
-			# Try loading in multiple models to give the user a choice
-			predictor = joblib.load(open(os.path.join("resources/dt.pkl"),"rb"))
-			prediction = predictor.predict(vect_text)
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
-			st.success("Text Categorized as: {}".format(prediction))
-
-		if st.button("Classify with K-Nearest Neighbors Model"):
-			# Transforming user input with vectorizer
-			vect_text =tweet_cv.transform([tweet_text]).toarray()
-			# Load your .pkl file with the model of your choice + make predictions
-			# Try loading in multiple models to give the user a choice
-			predictor = joblib.load(open(os.path.join("resources/rf.pkl"),"rb"))
-			prediction = predictor.predict(vect_text)
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
-			st.success("Text Categorized as: {}".format(prediction))
 	
 	
 	# Building out the EDA page
@@ -273,6 +229,49 @@ def main():
 			ax4.axis("off")
 			Negative = st.pyplot(fig4)
 
+# Building out the predication page
+	if selection == "Prediction":
+		st.info("Prediction with ML Models") 
+	
+
+		# Creating a text box for user input
+		tweet_text =st.text_area("Enter Text","Type Here")
+
+		if st.button("Classify with Logistic Regression Model"):
+			# Transforming user input with vectorizer
+			vect_text =tweet_cv.transform([tweet_text]).toarray()
+			# Load your .pkl file with the model of your choice + make predictions
+			# Try loading in multiple models to give the user a choice
+			predictor = joblib.load(open(os.path.join("resources/log.pkl"),"rb"))
+			prediction = predictor.predict(vect_text)
+			# When model has successfully run, will print prediction
+			# You can use a dictionary or similar structure to make this output
+			# more human interpretable.
+			st.success("Text Categorized as: {}".format(prediction))
+
+		if st.button("Classify with Decision Tree Model"):
+			# Transforming user input with vectorizer
+			vect_text =tweet_cv.transform([tweet_text]).toarray()
+			# Load your .pkl file with the model of your choice + make predictions
+			# Try loading in multiple models to give the user a choice
+			predictor = joblib.load(open(os.path.join("resources/dt.pkl"),"rb"))
+			prediction = predictor.predict(vect_text)
+			# When model has successfully run, will print prediction
+			# You can use a dictionary or similar structure to make this output
+			# more human interpretable.
+			st.success("Text Categorized as: {}".format(prediction))
+
+		if st.button("Classify with K-Nearest Neighbors Model"):
+			# Transforming user input with vectorizer
+			vect_text =tweet_cv.transform([tweet_text]).toarray()
+			# Load your .pkl file with the model of your choice + make predictions
+			# Try loading in multiple models to give the user a choice
+			predictor = joblib.load(open(os.path.join("resources/rf.pkl"),"rb"))
+			prediction = predictor.predict(vect_text)
+			# When model has successfully run, will print prediction
+			# You can use a dictionary or similar structure to make this output
+			# more human interpretable.
+			st.success("Text Categorized as: {}".format(prediction))
 		
 	
 
