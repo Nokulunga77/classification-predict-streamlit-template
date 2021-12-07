@@ -46,6 +46,8 @@ tweet_cv = joblib.load(news_vectorizer) # loading your vectorizer from the pkl f
 # Load your raw data
 raw = pd.read_csv("resources/train.csv")
 
+
+
 # The main function where we will build the actual app
 def main():
 	"""Tweet Classifier App with Streamlit """
@@ -233,9 +235,19 @@ def main():
 	if selection == "Prediction":
 		st.info("Prediction with ML Models") 
 	
+		#Dictionary for predictor human text
+		def prediction_to_strings(argument):
+    			switcher = {
+					"[-1]": "Anti (Negative): tweets that does not believe in man-made climate change",
+        			"[0]": "Neutral: tweets that neither support nor refutes the belief of man-made climate change",
+        			"[1]": "Pro: tweets that supports the belief of man-made climate change",
+        			"[2]": "News: tweets links to factual news about climate change",
+    			}
+    			return switcher.get(argument, "nothing")
 
 		# Creating a text box for user input
 		tweet_text =st.text_area("Enter Text","Type Here")
+
 
 		if st.button("Classify with Logistic Regression Model"):
 			# Transforming user input with vectorizer
@@ -244,10 +256,8 @@ def main():
 			# Try loading in multiple models to give the user a choice
 			predictor = joblib.load(open(os.path.join("resources/log.pkl"),"rb"))
 			prediction = predictor.predict(vect_text)
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
-			st.success("Text Categorized as: {}".format(prediction))
+			prediction = str(prediction)
+			st.success("Text Categorized as: {}".format(prediction_to_strings(prediction)))
 
 		if st.button("Classify with Decision Tree Model"):
 			# Transforming user input with vectorizer
@@ -256,10 +266,8 @@ def main():
 			# Try loading in multiple models to give the user a choice
 			predictor = joblib.load(open(os.path.join("resources/dt.pkl"),"rb"))
 			prediction = predictor.predict(vect_text)
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
-			st.success("Text Categorized as: {}".format(prediction))
+			prediction = str(prediction)
+			st.success("Text Categorized as: {}".format(prediction_to_strings(prediction)))
 
 		if st.button("Classify with K-Nearest Neighbors Model"):
 			# Transforming user input with vectorizer
@@ -268,10 +276,8 @@ def main():
 			# Try loading in multiple models to give the user a choice
 			predictor = joblib.load(open(os.path.join("resources/rf.pkl"),"rb"))
 			prediction = predictor.predict(vect_text)
-			# When model has successfully run, will print prediction
-			# You can use a dictionary or similar structure to make this output
-			# more human interpretable.
-			st.success("Text Categorized as: {}".format(prediction))
+			prediction = str(prediction)
+			st.success("Text Categorized as: {}".format(prediction_to_strings(prediction)))
 		
 	
 
